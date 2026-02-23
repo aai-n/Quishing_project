@@ -1,20 +1,20 @@
 function analyzeQR() {
-    const fileInput = document.getElementById("qrInput");
-    const resultDiv = document.getElementById("result");
+    const input = document.getElementById("qrInput");
+    const result = document.getElementById("result");
 
-    if (!fileInput.files.length) {
-        resultDiv.textContent = "Please upload a QR image.";
-        resultDiv.className = "error";
-        resultDiv.classList.remove("hidden");
+    if (!input.files.length) {
+        result.textContent = "Please upload a QR image.";
+        result.className = "error";
+        result.classList.remove("hidden");
         return;
     }
 
     const formData = new FormData();
-    formData.append("image", fileInput.files[0]);
+    formData.append("image", input.files[0]);
 
-    resultDiv.textContent = "Analyzing...";
-    resultDiv.className = "";
-    resultDiv.classList.remove("hidden");
+    result.textContent = "Analyzing...";
+    result.className = "";
+    result.classList.remove("hidden");
 
     fetch("http://127.0.0.1:8000/analyze", {
         method: "POST",
@@ -22,16 +22,16 @@ function analyzeQR() {
     })
     .then(res => res.json())
     .then(data => {
-        if (data.fraud === true) {
-            resultDiv.textContent = "🚨 POTENTIAL QUISHING DETECTED";
-            resultDiv.className = "error";
+        if (data.fraud) {
+            result.textContent = `🚨 FRAUD (${data.confidence}) — ${data.reason}`;
+            result.className = "error";
         } else {
-            resultDiv.textContent = "✅ SAFE QR CODE";
-            resultDiv.className = "safe";
+            result.textContent = `✅ SAFE (${data.confidence}) — ${data.reason}`;
+            result.className = "safe";
         }
     })
     .catch(() => {
-        resultDiv.textContent = "Server error. Is backend running?";
-        resultDiv.className = "error";
+        result.textContent = "Backend not running";
+        result.className = "error";
     });
 }

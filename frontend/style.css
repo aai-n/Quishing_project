@@ -3,8 +3,8 @@ body {
     background: linear-gradient(135deg, #ececec, #f9f9f9);
     height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 }
 
 .container {
@@ -15,19 +15,11 @@ body {
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
 }
 
-h1 {
-    margin-bottom: 20px;
-}
-
-input[type="file"] {
-    margin-bottom: 15px;
-}
-
 button {
     padding: 10px 20px;
-    border: none;
     background: #333;
     color: white;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -38,7 +30,7 @@ button:hover {
 
 #result {
     margin-top: 20px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
 }
 
