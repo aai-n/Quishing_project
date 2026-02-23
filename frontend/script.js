@@ -1,37 +1,29 @@
-function analyzeQR() {
+async function analyzeQR() {
     const input = document.getElementById("qrInput");
-    const result = document.getElementById("result");
+    if (!input.files.length) return alert("Select an image");
 
-    if (!input.files.length) {
-        result.textContent = "Please upload a QR image.";
-        result.className = "error";
-        result.classList.remove("hidden");
-        return;
-    }
-
+    const file = input.files[0];
     const formData = new FormData();
-    formData.append("image", input.files[0]);
+    formData.append("image", file);
 
-    result.textContent = "Analyzing...";
-    result.className = "";
-    result.classList.remove("hidden");
+    const resultDiv = document.getElementById("result");
 
-    fetch("http://127.0.0.1:8000/analyze", {
-        method: "POST",
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.fraud) {
-            result.textContent = `🚨 FRAUD (${data.confidence}) — ${data.reason}`;
-            result.className = "error";
-        } else {
-            result.textContent = `✅ SAFE (${data.confidence}) — ${data.reason}`;
-            result.className = "safe";
-        }
-    })
-    .catch(() => {
-        result.textContent = "Backend not running";
-        result.className = "error";
-    });
+    try {
+        const res = await fetch("http://127.0.0.1:8000/analyze", {
+            method: "POST",
+            body: formData
+        });
+        const data = await res.json();
+
+        resultDiv.classList.remove("hidden");
+        resultDiv.innerHTML = `
+            <p><strong>Decoded Data:</strong> ${data.decoded_data}</p>
+            <p><strong>Fraud:</strong> ${data.fraud}</p>
+            <p><strong>Confidence:</strong> ${data.confidence}</p>
+            <p><strong>Reason:</strong> ${data.reason}</p>
+        `;
+    } catch (err) {
+        alert("Error analyzing QR");
+        console.error(err);
+    }
 }
